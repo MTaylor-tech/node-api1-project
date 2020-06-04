@@ -41,8 +41,8 @@ function UserForm(props) {
   return (
     <Form>
       <FormDiv>
-        <label htmlFor="uname">Name</label><Field type="text" name="uname" placeholder="Name" /><br />
-        {props.touched.uname && props.errors.uname?<Error>{props.errors.uname}</Error>:<></>}
+        <label htmlFor="name">Name</label><Field type="text" name="name" placeholder="Name" /><br />
+        {props.touched.name && props.errors.name?<Error>{props.errors.name}</Error>:<></>}
         <label htmlFor="bio">Bio</label><Field type="text" name="bio" placeholder="Bio" /><br />
         {props.touched.bio && props.errors.bio?<Error>{props.errors.bio}</Error>:<></>}
         <Field type="hidden" name="id" />

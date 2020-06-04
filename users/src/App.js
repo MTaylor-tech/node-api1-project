@@ -19,19 +19,24 @@ function App() {
   const [users, setUsers] = useState([]);
   const [userToEdit, setUserToEdit] = useState();
   const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(0);
 
   useEffect(()=>{
-    if (users.length>0) {
-      setCurrentId(users[users.length-1].id+1)
-    }
-  },[users]);
+    getUsers()
+  },[]);
+
+  const getUsers = () => {
+    axios.get('http://localhost:4000/api/users')
+      .then(res=>{
+        console.log(res);
+        setUsers(res.data)
+      })
+      .catch(err=>console.log(err))
+  }
 
   const addUser = (user) => {
-
     let groupOfUsers = [];
     if (users.find(person=>person.id===user.id)) {
-      axios.put(`http://localhost/api/users/${user.id}`, user)
+      axios.put(`http://localhost:4000/api/users/${user.id}`, user)
         .then(response=>{
           console.log(response);
           groupOfUsers = users.map(person=>{
@@ -45,7 +50,7 @@ function App() {
         })
         .catch(error=>console.log(error));
     } else {
-      axios.post('http://localhost/api/users', user)
+      axios.post('http://localhost:4000/api/users', user)
         .then(response=>{
           console.log(response);
           groupOfUsers = [...users, user];
@@ -53,22 +58,38 @@ function App() {
         })
         .catch(error=>console.log(error));
     }
-
+    getUsers()
     setIsEditing(false);
   };
+
+  const deleteUser = (userId) => {
+    axios.delete(`http://localhost:4000/api/users/${userId}`)
+      .then(res=>console.log(res))
+      .catch(err=>console.log(err))
+
+    getUsers()
+    setIsEditing(false);
+  }
+
+  const newUser = () => {
+    setIsEditing(false);
+    setUserToEdit(null);
+  }
 
   const editUser = (user) => {
     console.log(user);
     setUserToEdit(user);
     setIsEditing(true)
+    getUsers()
   };
 
   return (
     <AppDiv>
       <h1>User System</h1>
-      {isEditing?<Form addFunction={addUser} {...userToEdit} isEditing={isEditing} currentId={userToEdit.id} />:<Form addFunction={addUser} isEditing={isEditing} currentId={currentId} />}
+      {isEditing?<Form addFunction={addUser} {...userToEdit} isEditing={isEditing} currentId={userToEdit.id} />:<Form addFunction={addUser} isEditing={isEditing} />}
+      <button onClick={newUser}>Add New User (Reset Form)</button><br />
       {users.length>0?<h2>Users</h2>:<></>}
-      {users.map(user=><UserCard user={user} key={user.id} editFunction={editUser} />)}
+      {users.map(user=><UserCard user={user} key={user.id} editFunction={editUser} deleteFunction={deleteUser} />)}
     </AppDiv>
   );
 }

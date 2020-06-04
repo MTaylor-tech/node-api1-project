@@ -26,6 +26,7 @@ function UserCard (props) {
       <h3>{props.user.name}</h3>
       <p>{props.user.bio}</p>
       <button onClick={()=>props.editFunction(props.user)}>Edit</button>
+      <button onClick={()=>props.deleteFunction(props.user.id)}>Delete</button>
     </UCard>
   )
 }
